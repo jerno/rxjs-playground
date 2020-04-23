@@ -1,6 +1,19 @@
 import { examples } from './examples';
+import { Subscription } from 'rxjs';
 
-const subscriptions = [];
+(<any>window).unsubscribeAll = () => {
+  logTask('Unsubscribe all');
+  for(let subscription of subscriptions) {
+    subscription.unsubscribe();
+  }
+  logStatuses();
+};
+
+(<any>window).statusAll = () => {
+  logStatuses();
+};
+
+const subscriptions: Subscription[] = [];
 
 for(let key in examples) {
   let div = document.createElement('div');
@@ -10,35 +23,66 @@ for(let key in examples) {
   div.append(title);
   
   if(examples[key].description) {
-    let description = document.createElement('p');
-    description.style.cssText = "color: grey;";
-    description.innerHTML = examples[key].description;
-    div.append(description);
+    let textElement = document.createElement('p');
+    textElement.style.cssText = "color: grey;";
+    textElement.innerHTML = examples[key].description;
+    div.append(textElement);
   }
 
   if(examples[key].explanation) {
-    let explanation = document.createElement('p');
-    explanation.style.cssText = "color: green;";
-    explanation.innerHTML = examples[key].explanation;
-    div.append(explanation);
+    let textElement = document.createElement('p');
+    textElement.style.cssText = "color: green;";
+    textElement.innerHTML = examples[key].explanation;
+    div.append(textElement);
+  }
+  
+  if(examples[key].interactive) {
+    let textElement = document.createElement('p');
+    textElement.style.cssText = "color: blue;";
+    textElement.innerHTML = `This example is interactive: ${examples[key].interactive}`;
+    div.append(textElement);
   }
 
-  let btn = document.createElement('button');
-  btn.innerHTML = `Run ${key}`;
-  btn.onclick = () => {
-    console.log(`├── Running example: ${key}`);
+  let ctx;
 
-    const s = examples[key].run().subscribe(
+  let btn = document.createElement('button');
+  btn.innerHTML = `Run scenario`;
+  btn.onclick = () => {
+    logTask(key);
+
+    ctx = (examples[key].init || noop)();
+    const observable = examples[key].run(ctx);
+
+    const s = observable.subscribe(
       value => console.log(`│   ├── ${value}`),
       error => console.log(`│   ├── [Error] ${error}`),
       () =>    console.log(`│   └── Exited`),
     );
     subscriptions.push(s);
-    console.log(`│       (${status()})`);
+    logStatuses();
   };
   div.append(btn);
 
+  for(let interaction of examples[key].interactions) {
+    div.append(' | interactions: ');
+    let btnInteraction = document.createElement('button');
+    btnInteraction.innerHTML = interaction.label;
+    btnInteraction.style.cssText = "background-color: #0000ff82;border: 1px solid #0000ff69;";
+    btnInteraction.onclick = () => {
+      interaction.run(ctx);
+    };
+    div.append(btnInteraction);
+  }
+
   document.getElementById('examples').append(div);
+}
+
+function logStatuses() {
+  console.log(`│       (${status()})`);
+}
+
+function logTask(taskName: string) {
+  console.log(`├── Running: ${taskName}`);
 }
 
 function status() {
@@ -46,3 +90,5 @@ function status() {
   const stopped = subscriptions.filter(s => s.isStopped);
   return `${open.length} Open, ${stopped.length} Stopped, ${subscriptions.length} Total`;
 }
+
+function noop() {}

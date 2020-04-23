@@ -1,4 +1,32 @@
-<h1>RxJS playground</h1>
-<p>To run an example, click a button. Open the console below to see results</p>
+<html>
 
-<div id="examples"></div>
+<head>
+	<style>
+		#buttons {
+			position: fixed;
+			top: 1rem;
+			right: 1rem;
+			display: flex;
+			flex-direction: column;
+		}
+
+		button {
+			padding: 0.3rem;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>RxJS playground</h1>
+	<p>To run an example, click a button. Open the console below to see results</p>
+
+	<div id="examples"></div>
+
+	<div id="buttons">
+		<button onclick="unsubscribeAll()">Unsubscribe all</button>
+		<button onclick="statusAll()">Status all</button>
+	</div>
+</body>
+
+</html>
