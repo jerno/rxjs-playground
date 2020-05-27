@@ -1,37 +1,40 @@
-import { Example } from './example';
-import { Observable, Subject, of, interval, from } from "rxjs";
-import { map, mergeMap, take, tap, switchMap } from "rxjs/operators";
-
+import { Example } from "./example";
 
 export const examples: { [name: string]: Example } = {};
 
-import { observableMultiSubscriberExample } from './examples/observableMultiSubscriber';
+import { observableMultiSubscriberExample } from "./examples/observableMultiSubscriber";
 addExample(observableMultiSubscriberExample);
 
-import { switchMapExample } from './examples/switchMap';
+import { subjectMultiSubscriberExample } from "./examples/subjectMultiSubscriber";
+addExample(subjectMultiSubscriberExample);
+
+/* import { subjectPipeMultiSubscriberExample } from './examples/subjectPipeMultiSubscriber';
+addExample(subjectPipeMultiSubscriberExample); */
+
+import { switchMapExample } from "./examples/switchMap";
 addExample(switchMapExample);
 
-import { limitedSubjectExample } from './examples/subjectLimited';
+import { limitedSubjectExample } from "./examples/subjectLimited";
 addExample(limitedSubjectExample);
 
-import { simpleSubjectExample } from './examples/subjectSimple';
+import { simpleSubjectExample } from "./examples/subjectSimple";
 addExample(simpleSubjectExample);
 
-import { mergeMapExample } from './examples/mergeMap';
+import { mergeMapExample } from "./examples/mergeMap";
 addExample(mergeMapExample);
 
-import { observableCompleteExample } from './examples/observableComplete';
+import { observableCompleteExample } from "./examples/observableComplete";
 addExample(observableCompleteExample);
 
-import { customObservableExample } from './examples/observableCustom';
+import { customObservableExample } from "./examples/observableCustom";
 addExample(customObservableExample);
 
-import { basicObservableExample } from './examples/observableBasic';
+import { basicObservableExample } from "./examples/observableBasic";
 addExample(basicObservableExample);
 
 function addExample(example: Example) {
   examples[example.name] = {
     ...example,
-    interactions: example.interactions || []
+    interactions: example.interactions || [],
   };
 }

@@ -1,9 +1,9 @@
-import { examples } from './examples';
-import { Subscription } from 'rxjs';
+import { examples } from "./examples";
+import { Subscription } from "rxjs";
 
 (<any>window).unsubscribeAll = () => {
-  logTask('Unsubscribe all');
-  for(let subscription of subscriptions) {
+  logTask("Unsubscribe all");
+  for (let subscription of subscriptions) {
     subscription.unsubscribe();
   }
   logStatuses();
@@ -15,29 +15,29 @@ import { Subscription } from 'rxjs';
 
 const subscriptions: Subscription[] = [];
 
-for(let key in examples) {
-  let div = document.createElement('div');
+for (let key in examples) {
+  let div = document.createElement("div");
 
-  let title = document.createElement('h2');
+  let title = document.createElement("h2");
   title.innerHTML = key;
   div.append(title);
-  
-  if(examples[key].description) {
-    let textElement = document.createElement('p');
+
+  if (examples[key].description) {
+    let textElement = document.createElement("p");
     textElement.style.cssText = "color: grey;";
     textElement.innerHTML = examples[key].description;
     div.append(textElement);
   }
 
-  if(examples[key].explanation) {
-    let textElement = document.createElement('p');
+  if (examples[key].explanation) {
+    let textElement = document.createElement("p");
     textElement.style.cssText = "color: green;";
     textElement.innerHTML = examples[key].explanation;
     div.append(textElement);
   }
-  
-  if(examples[key].interactive) {
-    let textElement = document.createElement('p');
+
+  if (examples[key].interactive) {
+    let textElement = document.createElement("p");
     textElement.style.cssText = "color: blue;";
     textElement.innerHTML = `This example is interactive: ${examples[key].interactive}`;
     div.append(textElement);
@@ -46,28 +46,33 @@ for(let key in examples) {
   let ctx;
 
   const logger = {
-    log: (args) => console.log(`│   ├── [Info]`, ...args)
-  }
+    log: (args) => console.log(`│   ├── [Info]`, ...args),
+    logAs: (t, args) => console.log(`│   ├── [${t}]`, ...args),
+    logSub: (level, args) => {
+      const subLevels = "│   ".repeat(level + 1);
+      console.log(`${subLevels}├── [Info]`, ...args);
+    },
+  };
 
   const subscribtionHelper = {
-    doSubscribe: (obs$, fnValue, fnError, fnFinal) => {
+    doSubscribe: (obs$) => {
       const s = obs$.subscribe(
-        value => fnValue,
-        error => fnError,
-        () =>    fnFinal,
+        (value) => console.log(`│   │   ├── [Output] ${value}`),
+        (error) => console.log(`│   │   ├── [Error] ${error}`),
+        () => /**/ console.log(`│   │   └── Exited`)
       );
       subscriptions.push(s);
       logStatuses();
-    }
-  }
+    },
+  };
 
   const buildContext = () => ({
     ...(examples[key].init || noop)(),
     ...subscribtionHelper,
-    logger
-  })
+    logger,
+  });
 
-  let btn = document.createElement('button');
+  let btn = document.createElement("button");
   btn.innerHTML = `Run scenario`;
   btn.onclick = () => {
     logTask(key);
@@ -76,27 +81,31 @@ for(let key in examples) {
     const observable = examples[key].run(ctx);
 
     const s = observable.subscribe(
-      value => console.log(`│   ├── [Output] ${value}`),
-      error => console.log(`│   ├── [Error] ${error}`),
-      () =>    console.log(`│   └── Exited`),
+      (value) => console.log(`│   ├── [Output] ${value}`),
+      (error) => console.log(`│   ├── [Error] ${error}`),
+      () => /**/ console.log(`│   └── Exited`)
     );
     subscriptions.push(s);
     logStatuses();
   };
   div.append(btn);
 
-  for(let interaction of examples[key].interactions) {
-    div.append(' | interactions: ');
-    let btnInteraction = document.createElement('button');
+  if (examples[key].interactions) {
+    div.append(" | interactions: ");
+  }
+
+  for (let interaction of examples[key].interactions) {
+    let btnInteraction = document.createElement("button");
     btnInteraction.innerHTML = interaction.label;
-    btnInteraction.style.cssText = "background-color: #0000ff82;border: 1px solid #0000ff69;";
+    btnInteraction.style.cssText =
+      "background-color: #0000ff82;border: 1px solid #0000ff69;";
     btnInteraction.onclick = () => {
       interaction.run(ctx);
     };
     div.append(btnInteraction);
   }
 
-  document.getElementById('examples').append(div);
+  document.getElementById("examples").append(div);
 }
 
 function logStatuses() {
@@ -108,8 +117,8 @@ function logTask(taskName: string) {
 }
 
 function status() {
-  const open = subscriptions.filter(s => !s.closed);
-  const stopped = subscriptions.filter(s => s.isStopped);
+  const open = subscriptions.filter((s) => !s.closed);
+  const stopped = subscriptions.filter((s) => s.isStopped);
   return `${open.length} Open, ${stopped.length} Stopped, ${subscriptions.length} Total`;
 }
 
