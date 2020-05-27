@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
 
-
 export const customObservableExample = {
   name: "Custom Observable",
   run: () => {

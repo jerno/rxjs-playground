@@ -45,16 +45,38 @@ for(let key in examples) {
 
   let ctx;
 
+  const logger = {
+    log: (args) => console.log(`│   ├── [Info]`, ...args)
+  }
+
+  const subscribtionHelper = {
+    doSubscribe: (obs$, fnValue, fnError, fnFinal) => {
+      const s = obs$.subscribe(
+        value => fnValue,
+        error => fnError,
+        () =>    fnFinal,
+      );
+      subscriptions.push(s);
+      logStatuses();
+    }
+  }
+
+  const buildContext = () => ({
+    ...(examples[key].init || noop)(),
+    ...subscribtionHelper,
+    logger
+  })
+
   let btn = document.createElement('button');
   btn.innerHTML = `Run scenario`;
   btn.onclick = () => {
     logTask(key);
 
-    ctx = (examples[key].init || noop)();
+    ctx = buildContext();
     const observable = examples[key].run(ctx);
 
     const s = observable.subscribe(
-      value => console.log(`│   ├── ${value}`),
+      value => console.log(`│   ├── [Output] ${value}`),
       error => console.log(`│   ├── [Error] ${error}`),
       () =>    console.log(`│   └── Exited`),
     );
