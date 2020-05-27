@@ -1,15 +1,17 @@
-import { Observable, Subject } from "rxjs";
-import { map } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { map, multicast, refCount } from "rxjs/operators";
 import { Runner } from "./Runner";
 
-export const subjectPipeMultiSubscriberExample = {
-  name: "Subject|transform with multiple subscriber",
+export const subjectPipeMulticastMultiSubscriberExample = {
+  name: "Subject|transform|multicast with multiple subscriber",
   run: (ctx) => {
     const runner = new Runner(ctx);
     const source = new Subject();
 
     const pipedSource = source.pipe(
-      map((x) => runner.performHeavyTransformation(x))
+      map((x) => runner.performHeavyTransformation(x)),
+      multicast(new Subject()),
+      refCount()
     );
 
     ctx.runner = runner;
