@@ -14,6 +14,7 @@ export const subjectPipeMulticastMultiSubscriberExample = {
       refCount()
     );
 
+    ctx.n = 3;
     ctx.runner = runner;
     ctx.source$ = pipedSource;
     return pipedSource;
@@ -22,7 +23,7 @@ export const subjectPipeMulticastMultiSubscriberExample = {
     {
       label: "Publish a value",
       run: (ctx) => {
-        ctx.source$.next(ctx.runner.performHeavyConstruction());
+        ctx.source$.next(ctx.runner.performHeavyConstruction(ctx.n++));
       },
     },
     {

@@ -3,8 +3,7 @@ export class Runner {
   constructor(ctx) {
     this.ctx = ctx;
   }
-  public performHeavyConstruction() {
-    const x = 3;
+  public performHeavyConstruction(x = 3) {
     this.ctx.logger.log(`Performing heavy construction: ${x}`);
     return x;
   }
