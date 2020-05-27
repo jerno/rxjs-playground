@@ -3,7 +3,7 @@ import { map } from "rxjs/operators";
 import { Runner } from "./Runner";
 
 export const subjectMultiSubscriberExample = {
-  name: "Subject with multiple subscriber",
+  name: "Subject(republish) with multiple subscriber",
   run: (ctx) => {
     const runner = new Runner(ctx);
     const source = new Subject();
