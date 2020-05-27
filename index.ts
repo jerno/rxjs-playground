@@ -56,6 +56,7 @@ for (let key in examples) {
 
   const subscribtionHelper = {
     doSubscribe: (obs$) => {
+      console.log(`│   │   ├── [Info] New subscriber`)
       const s = obs$.subscribe(
         (value) => console.log(`│   │   ├── [Output] ${value}`),
         (error) => console.log(`│   │   ├── [Error] ${error}`),

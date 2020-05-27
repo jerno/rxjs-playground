@@ -7,7 +7,6 @@ export const subjectMultiSubscriberExample = {
   run: (ctx) => {
     const runner = new Runner(ctx);
     const source = new Subject();
-    source.next(runner.performHeavyConstruction());
 
     const pipedSource = source.pipe(
       map((x) => runner.performHeavyTransformation(x))
@@ -21,9 +20,7 @@ export const subjectMultiSubscriberExample = {
     {
       label: "Publish a value",
       run: (ctx) => {
-        ctx.source$.next(
-          `User generated value ${ctx.runner.performHeavyConstruction()}`
-        );
+        ctx.source$.next(ctx.runner.performHeavyConstruction());
       },
     },
     {
