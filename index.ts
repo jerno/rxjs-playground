@@ -17,6 +17,8 @@ const subscriptions: Subscription[] = [];
 
 for (let key in examples) {
   let div = document.createElement("div");
+  const exampleId = (new Date()).getTime();
+  div.classList.add(`example-${exampleId}`);
 
   let title = document.createElement("h2");
   title.innerHTML = key;
@@ -56,7 +58,7 @@ for (let key in examples) {
 
   const subscribtionHelper = {
     doSubscribe: (obs$) => {
-      console.log(`│   │   ├── [Info] New subscriber`)
+      console.log(`│   │   ├── [Info] New subscriber`);
       const s = obs$.subscribe(
         (value) => console.log(`│   │   ├── [Output] ${value}`),
         (error) => console.log(`│   │   ├── [Error] ${error}`),
@@ -65,6 +67,12 @@ for (let key in examples) {
       subscriptions.push(s);
       logStatuses();
     },
+    doPopSubscribtion: () => {
+      console.log(`│   │   ├── [Info] Remove a subscriber`);
+      const s = subscriptions.pop();
+      s ? s.unsubscribe() : null;
+      logStatuses();
+    }
   };
 
   const buildContext = () => ({
@@ -77,9 +85,13 @@ for (let key in examples) {
   btn.innerHTML = `Run scenario`;
   btn.onclick = () => {
     logTask(key);
+    debugger;
 
     ctx = buildContext();
     const observable = examples[key].run(ctx);
+    for(let element of Array.from(document.querySelectorAll(`.example-${exampleId} button.interaction`))) {
+      (element as any).disabled = false;
+    }
 
     const s = observable.subscribe(
       (value) => console.log(`│   ├── [Output] ${value}`),
@@ -98,6 +110,8 @@ for (let key in examples) {
   for (let interaction of examples[key].interactions) {
     let btnInteraction = document.createElement("button");
     btnInteraction.innerHTML = interaction.label;
+    btnInteraction.disabled = true;
+    btnInteraction.classList.add('interaction');
     btnInteraction.style.cssText =
       "background-color: #0000ff82;border: 1px solid #0000ff69;";
     btnInteraction.onclick = () => {

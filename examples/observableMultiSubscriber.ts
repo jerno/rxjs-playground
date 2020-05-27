@@ -15,7 +15,7 @@ export const observableMultiSubscriberExample = {
   },
   interactions: [
     {
-      label: "Subscribe again",
+      label: "Subscribe +",
       run: (ctx) => {
         ctx.doSubscribe(ctx.observable$, (value) => ctx.logger.log(value));
       },
@@ -25,4 +25,5 @@ export const observableMultiSubscriberExample = {
     'Creates a custom observable producing a "heavy operation", pipes the value using a "heavy operation" and subscribe (log the result).',
   explanation:
     'Note that the "heavy operation" is calculated each time a new observer subscribes.',
+  interactive: "You can subscribe to the observable one more time with an other observer."
 };

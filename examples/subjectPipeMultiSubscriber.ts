@@ -24,7 +24,7 @@ export const subjectPipeMultiSubscriberExample = {
       },
     },
     {
-      label: "Subscribe again",
+      label: "Subscribe +",
       run: (ctx) => {
         ctx.doSubscribe(ctx.source$);
       },
@@ -34,4 +34,5 @@ export const subjectPipeMultiSubscriberExample = {
     'Creates a custom observable producing a "heavy operation", pipes the value using a "heavy operation" and subscribe (log the result).',
   explanation:
     'Note that the "heavy operation" is calculated each time a new observer subscribes.',
+  interactive: "You can push a new value to the Subject using the «Publish a value» button. Also, you can manage subscribtions on the observable using the «Subscribe+ » and «Unubscribe- »."
 };
