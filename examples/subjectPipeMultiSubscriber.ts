@@ -2,8 +2,8 @@ import { Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import { Runner } from "./Runner";
 
-export const subjectMultiSubscriberExample = {
-  name: "Subject with multiple subscriber",
+export const subjectPipeMultiSubscriberExample = {
+  name: "Subject|pipe with multiple subscriber",
   run: (ctx) => {
     const runner = new Runner(ctx);
     const source = new Subject();
@@ -12,25 +12,21 @@ export const subjectMultiSubscriberExample = {
       map((x) => runner.performHeavyTransformation(x))
     );
 
-    const helperSubject = new Subject();
-    pipedSource.subscribe(helperSubject);
-
     ctx.runner = runner;
-    ctx.sourceToPublish$ = pipedSource;
-    ctx.sourceToSubscribe$ = helperSubject;
-    return helperSubject;
+    ctx.source$ = pipedSource;
+    return pipedSource;
   },
   interactions: [
     {
       label: "Publish a value",
       run: (ctx) => {
-        ctx.sourceToPublish$.next(ctx.runner.performHeavyConstruction());
+        ctx.source$.next(ctx.runner.performHeavyConstruction());
       },
     },
     {
       label: "Subscribe again",
       run: (ctx) => {
-        ctx.doSubscribe(ctx.sourceToSubscribe$);
+        ctx.doSubscribe(ctx.source$);
       },
     },
   ],

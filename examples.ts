@@ -2,11 +2,11 @@ import { Example } from "./example";
 
 export const examples: { [name: string]: Example } = {};
 
+import { subjectPipeMultiSubscriberExample } from "./examples/subjectPipeMultiSubscriber";
+addExample(subjectPipeMultiSubscriberExample);
+
 import { subjectMultiSubscriberExample } from "./examples/subjectMultiSubscriber";
 addExample(subjectMultiSubscriberExample);
-
-/* import { subjectPipeMultiSubscriberExample } from './examples/subjectPipeMultiSubscriber';
-addExample(subjectPipeMultiSubscriberExample); */
 
 import { observableMultiSubscriberExample } from "./examples/observableMultiSubscriber";
 addExample(observableMultiSubscriberExample);
